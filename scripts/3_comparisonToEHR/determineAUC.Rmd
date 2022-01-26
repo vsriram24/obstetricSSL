@@ -1,0 +1,2086 @@
+---
+title: "calculateAUC"
+author: "Vivek Sriram"
+output: html_document
+---
+
+```{r}
+library(dplyr)
+library(pROC)
+library(ggplot2)
+```
+
+
+# 634.1
+```{r}
+noSymptoms_weighted = read.csv("/Users/viveksrm/Desktop/coAssociationResults/coAssociationResults_634.1.csv")
+noSymptoms_weighted = noSymptoms_weighted %>%
+  select(phenotype, score, ehrSignificance) %>%
+  mutate(ehrSigAdjusted = p.adjust(ehrSignificance, "fdr"))
+
+noSymptoms_weighted$trueLabel <- ifelse(noSymptoms_weighted$ehrSigAdjusted <= 0.05, 1, 0)
+```
+
+```{r}
+roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score)
+
+plot(roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score), xlim = c(1, 0), ylim = c(0, 1))
+```
+0.5742
+
+
+
+```{r}
+# Sort our dataframe by score
+noSymptoms_weighted_sorted = noSymptoms_weighted[order(noSymptoms_weighted$score),] 
+
+# Come up with different k values based upon number of rows in the dataframe
+kProportionValues = c(0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00)
+
+kCountValues = round(nrow(noSymptoms_weighted_sorted)*kProportionValues)
+```
+
+Precisions
+```{r}
+precisions = c()
+# For each k count, calculate the precision:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the fraction of them have a true label of 1
+  currentPrecision = sum(currentSearchResults$trueLabel)/nrow(currentSearchResults)
+  precisions = c(precisions, currentPrecision)
+}
+
+print(precisions)
+```
+
+Recall/Sensitivity
+```{r}
+sensitivities = c()
+numTruePositives = sum(noSymptoms_weighted_sorted$trueLabel)
+
+# For each k count, calculate the recall:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the number of true Positives we identified out of the full list of true positives
+  currentSensitivity = sum(currentSearchResults$trueLabel)/numTruePositives
+  sensitivities = c(sensitivities, currentSensitivity)
+}
+
+print(sensitivities)
+```
+
+F1
+```{r}
+# Given the precision and recall value, return 2/(1/precision + 1/recall)
+f1Scores = 2/(1/precisions + 1/sensitivities)
+f1Scores
+```
+
+
+
+# 634.3
+```{r}
+noSymptoms_weighted = read.csv("/Users/viveksrm/Desktop/coAssociationResults/coAssociationResults_634.3.csv")
+noSymptoms_weighted = noSymptoms_weighted %>%
+  select(phenotype, score, ehrSignificance) %>%
+  mutate(ehrSigAdjusted = p.adjust(ehrSignificance, "fdr"))
+
+noSymptoms_weighted$trueLabel <- ifelse(noSymptoms_weighted$ehrSigAdjusted <= 0.05, 1, 0)
+```
+
+```{r}
+roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score)
+
+plot(roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score), xlim = c(1, 0), ylim = c(0, 1))
+```
+0.5271
+
+
+
+
+```{r}
+# Sort our dataframe by score
+noSymptoms_weighted_sorted = noSymptoms_weighted[order(noSymptoms_weighted$score),] 
+
+# Come up with different k values based upon number of rows in the dataframe
+kProportionValues = c(0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00)
+
+kCountValues = round(nrow(noSymptoms_weighted_sorted)*kProportionValues)
+```
+
+Precisions
+```{r}
+precisions = c()
+# For each k count, calculate the precision:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the fraction of them have a true label of 1
+  currentPrecision = sum(currentSearchResults$trueLabel)/nrow(currentSearchResults)
+  precisions = c(precisions, currentPrecision)
+}
+
+print(precisions)
+```
+
+Recall/Sensitivity
+```{r}
+sensitivities = c()
+numTruePositives = sum(noSymptoms_weighted_sorted$trueLabel)
+
+# For each k count, calculate the recall:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the number of true Positives we identified out of the full list of true positives
+  currentSensitivity = sum(currentSearchResults$trueLabel)/numTruePositives
+  sensitivities = c(sensitivities, currentSensitivity)
+}
+
+print(sensitivities)
+```
+
+F1
+```{r}
+# Given the precision and recall value, return 2/(1/precision + 1/recall)
+f1Scores = 2/(1/precisions + 1/sensitivities)
+f1Scores
+```
+
+
+
+
+# 634
+```{r}
+noSymptoms_weighted = read.csv("/Users/viveksrm/Desktop/coAssociationResults/coAssociationResults_634.csv")
+noSymptoms_weighted = noSymptoms_weighted %>%
+  select(phenotype, score, ehrSignificance) %>%
+  mutate(ehrSigAdjusted = p.adjust(ehrSignificance, "fdr"))
+
+noSymptoms_weighted$trueLabel <- ifelse(noSymptoms_weighted$ehrSigAdjusted <= 0.05, 1, 0)
+```
+
+```{r}
+roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score)
+
+plot(roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score), xlim = c(1, 0), ylim = c(0, 1))
+```
+
+
+```{r}
+# Sort our dataframe by score
+noSymptoms_weighted_sorted = noSymptoms_weighted[order(noSymptoms_weighted$score),] 
+
+# Come up with different k values based upon number of rows in the dataframe
+kProportionValues = c(0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00)
+
+kCountValues = round(nrow(noSymptoms_weighted_sorted)*kProportionValues)
+```
+
+Precisions
+```{r}
+precisions = c()
+# For each k count, calculate the precision:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the fraction of them have a true label of 1
+  currentPrecision = sum(currentSearchResults$trueLabel)/nrow(currentSearchResults)
+  precisions = c(precisions, currentPrecision)
+}
+
+print(precisions)
+```
+
+Recall/Sensitivity
+```{r}
+sensitivities = c()
+numTruePositives = sum(noSymptoms_weighted_sorted$trueLabel)
+
+# For each k count, calculate the recall:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the number of true Positives we identified out of the full list of true positives
+  currentSensitivity = sum(currentSearchResults$trueLabel)/numTruePositives
+  sensitivities = c(sensitivities, currentSensitivity)
+}
+
+print(sensitivities)
+```
+
+F1
+```{r}
+# Given the precision and recall value, return 2/(1/precision + 1/recall)
+f1Scores = 2/(1/precisions + 1/sensitivities)
+f1Scores
+```
+
+
+# 635.2
+```{r}
+noSymptoms_weighted = read.csv("/Users/viveksrm/Desktop/coAssociationResults/coAssociationResults_635.2.csv")
+noSymptoms_weighted = noSymptoms_weighted %>%
+  select(phenotype, score, ehrSignificance) %>%
+  mutate(ehrSigAdjusted = p.adjust(ehrSignificance, "fdr"))
+
+noSymptoms_weighted$trueLabel <- ifelse(noSymptoms_weighted$ehrSigAdjusted <= 0.05, 1, 0)
+```
+
+```{r}
+roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score)
+
+plot(roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score), xlim = c(1, 0), ylim = c(0, 1))
+```
+
+
+```{r}
+# Sort our dataframe by score
+noSymptoms_weighted_sorted = noSymptoms_weighted[order(noSymptoms_weighted$score),] 
+
+# Come up with different k values based upon number of rows in the dataframe
+kProportionValues = c(0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00)
+
+kCountValues = round(nrow(noSymptoms_weighted_sorted)*kProportionValues)
+```
+
+Precisions
+```{r}
+precisions = c()
+# For each k count, calculate the precision:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the fraction of them have a true label of 1
+  currentPrecision = sum(currentSearchResults$trueLabel)/nrow(currentSearchResults)
+  precisions = c(precisions, currentPrecision)
+}
+
+print(precisions)
+```
+
+Recall/Sensitivity
+```{r}
+sensitivities = c()
+numTruePositives = sum(noSymptoms_weighted_sorted$trueLabel)
+
+# For each k count, calculate the recall:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the number of true Positives we identified out of the full list of true positives
+  currentSensitivity = sum(currentSearchResults$trueLabel)/numTruePositives
+  sensitivities = c(sensitivities, currentSensitivity)
+}
+
+print(sensitivities)
+```
+
+F1
+```{r}
+# Given the precision and recall value, return 2/(1/precision + 1/recall)
+f1Scores = 2/(1/precisions + 1/sensitivities)
+f1Scores
+```
+
+
+
+# 635.3
+```{r}
+noSymptoms_weighted = read.csv("/Users/viveksrm/Desktop/coAssociationResults/coAssociationResults_635.3.csv")
+noSymptoms_weighted = noSymptoms_weighted %>%
+  select(phenotype, score, ehrSignificance) %>%
+  mutate(ehrSigAdjusted = p.adjust(ehrSignificance, "fdr"))
+
+noSymptoms_weighted$trueLabel <- ifelse(noSymptoms_weighted$ehrSigAdjusted <= 0.05, 1, 0)
+```
+
+```{r}
+sum(noSymptoms_weighted$trueLabel)
+```
+
+GBSSL:
+10 true positives
+10 false positives
+105 false negatives
+747 true negatives
+
+Accuracy: 0.8681
+
+
+
+Network:
+15 true positives
+23 false positives
+100 false negatives
+734 false negatives
+
+Accuracy: 0.8589
+
+
+```{r}
+roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score)
+
+plot(roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score), xlim = c(1, 0), ylim = c(0, 1))
+```
+
+
+```{r}
+# Sort our dataframe by score
+noSymptoms_weighted_sorted = noSymptoms_weighted[order(noSymptoms_weighted$score),] 
+
+# Come up with different k values based upon number of rows in the dataframe
+kProportionValues = c(0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00)
+
+kCountValues = round(nrow(noSymptoms_weighted_sorted)*kProportionValues)
+```
+
+Precisions
+```{r}
+precisions = c()
+# For each k count, calculate the precision:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the fraction of them have a true label of 1
+  currentPrecision = sum(currentSearchResults$trueLabel)/nrow(currentSearchResults)
+  precisions = c(precisions, currentPrecision)
+}
+
+print(precisions)
+```
+
+Recall/Sensitivity
+```{r}
+sensitivities = c()
+numTruePositives = sum(noSymptoms_weighted_sorted$trueLabel)
+
+# For each k count, calculate the recall:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the number of true Positives we identified out of the full list of true positives
+  currentSensitivity = sum(currentSearchResults$trueLabel)/numTruePositives
+  sensitivities = c(sensitivities, currentSensitivity)
+}
+
+print(sensitivities)
+```
+
+F1
+```{r}
+# Given the precision and recall value, return 2/(1/precision + 1/recall)
+f1Scores = 2/(1/precisions + 1/sensitivities)
+f1Scores
+```
+
+
+
+# 635
+```{r}
+noSymptoms_weighted = read.csv("/Users/viveksrm/Desktop/coAssociationResults/coAssociationResults_635.csv")
+noSymptoms_weighted = noSymptoms_weighted %>%
+  select(phenotype, score, ehrSignificance) %>%
+  mutate(ehrSigAdjusted = p.adjust(ehrSignificance, "fdr"))
+
+noSymptoms_weighted$trueLabel <- ifelse(noSymptoms_weighted$ehrSigAdjusted <= 0.05, 1, 0)
+```
+
+```{r}
+roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score)
+
+plot(roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score), xlim = c(1, 0), ylim = c(0, 1))
+```
+
+
+```{r}
+# Sort our dataframe by score
+noSymptoms_weighted_sorted = noSymptoms_weighted[order(noSymptoms_weighted$score),] 
+
+# Come up with different k values based upon number of rows in the dataframe
+kProportionValues = c(0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00)
+
+kCountValues = round(nrow(noSymptoms_weighted_sorted)*kProportionValues)
+```
+
+Precisions
+```{r}
+precisions = c()
+# For each k count, calculate the precision:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the fraction of them have a true label of 1
+  currentPrecision = sum(currentSearchResults$trueLabel)/nrow(currentSearchResults)
+  precisions = c(precisions, currentPrecision)
+}
+
+print(precisions)
+```
+
+Recall/Sensitivity
+```{r}
+sensitivities = c()
+numTruePositives = sum(noSymptoms_weighted_sorted$trueLabel)
+
+# For each k count, calculate the recall:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the number of true Positives we identified out of the full list of true positives
+  currentSensitivity = sum(currentSearchResults$trueLabel)/numTruePositives
+  sensitivities = c(sensitivities, currentSensitivity)
+}
+
+print(sensitivities)
+```
+
+F1
+```{r}
+# Given the precision and recall value, return 2/(1/precision + 1/recall)
+f1Scores = 2/(1/precisions + 1/sensitivities)
+f1Scores
+```
+
+
+
+# 636.2
+```{r}
+noSymptoms_weighted = read.csv("/Users/viveksrm/Desktop/coAssociationResults/coAssociationResults_636.2.csv")
+noSymptoms_weighted = noSymptoms_weighted %>%
+  select(phenotype, score, ehrSignificance) %>%
+  mutate(ehrSigAdjusted = p.adjust(ehrSignificance, "fdr"))
+
+noSymptoms_weighted$trueLabel <- ifelse(noSymptoms_weighted$ehrSigAdjusted <= 0.05, 1, 0)
+```
+
+```{r}
+roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score)
+
+plot(roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score), xlim = c(1, 0), ylim = c(0, 1))
+```
+
+
+```{r}
+# Sort our dataframe by score
+noSymptoms_weighted_sorted = noSymptoms_weighted[order(noSymptoms_weighted$score),] 
+
+# Come up with different k values based upon number of rows in the dataframe
+kProportionValues = c(0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00)
+
+kCountValues = round(nrow(noSymptoms_weighted_sorted)*kProportionValues)
+```
+
+Precisions
+```{r}
+precisions = c()
+# For each k count, calculate the precision:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the fraction of them have a true label of 1
+  currentPrecision = sum(currentSearchResults$trueLabel)/nrow(currentSearchResults)
+  precisions = c(precisions, currentPrecision)
+}
+
+print(precisions)
+```
+
+Recall/Sensitivity
+```{r}
+sensitivities = c()
+numTruePositives = sum(noSymptoms_weighted_sorted$trueLabel)
+
+# For each k count, calculate the recall:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the number of true Positives we identified out of the full list of true positives
+  currentSensitivity = sum(currentSearchResults$trueLabel)/numTruePositives
+  sensitivities = c(sensitivities, currentSensitivity)
+}
+
+print(sensitivities)
+```
+
+F1
+```{r}
+# Given the precision and recall value, return 2/(1/precision + 1/recall)
+f1Scores = 2/(1/precisions + 1/sensitivities)
+f1Scores
+```
+
+
+
+
+# 636.3
+```{r}
+noSymptoms_weighted = read.csv("/Users/viveksrm/Desktop/coAssociationResults/coAssociationResults_636.3.csv")
+noSymptoms_weighted = noSymptoms_weighted %>%
+  select(phenotype, score, ehrSignificance) %>%
+  mutate(ehrSigAdjusted = p.adjust(ehrSignificance, "fdr"))
+
+noSymptoms_weighted$trueLabel <- ifelse(noSymptoms_weighted$ehrSigAdjusted <= 0.05, 1, 0)
+```
+
+```{r}
+roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score)
+
+plot(roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score), xlim = c(1, 0), ylim = c(0, 1))
+```
+
+
+```{r}
+# Sort our dataframe by score
+noSymptoms_weighted_sorted = noSymptoms_weighted[order(noSymptoms_weighted$score),] 
+
+# Come up with different k values based upon number of rows in the dataframe
+kProportionValues = c(0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00)
+
+kCountValues = round(nrow(noSymptoms_weighted_sorted)*kProportionValues)
+```
+
+Precisions
+```{r}
+precisions = c()
+# For each k count, calculate the precision:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the fraction of them have a true label of 1
+  currentPrecision = sum(currentSearchResults$trueLabel)/nrow(currentSearchResults)
+  precisions = c(precisions, currentPrecision)
+}
+
+print(precisions)
+```
+
+Recall/Sensitivity
+```{r}
+sensitivities = c()
+numTruePositives = sum(noSymptoms_weighted_sorted$trueLabel)
+
+# For each k count, calculate the recall:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the number of true Positives we identified out of the full list of true positives
+  currentSensitivity = sum(currentSearchResults$trueLabel)/numTruePositives
+  sensitivities = c(sensitivities, currentSensitivity)
+}
+
+print(sensitivities)
+```
+
+F1
+```{r}
+# Given the precision and recall value, return 2/(1/precision + 1/recall)
+f1Scores = 2/(1/precisions + 1/sensitivities)
+f1Scores
+```
+
+
+
+
+# 636
+```{r}
+noSymptoms_weighted = read.csv("/Users/viveksrm/Desktop/coAssociationResults/coAssociationResults_636.csv")
+noSymptoms_weighted = noSymptoms_weighted %>%
+  select(phenotype, score, ehrSignificance) %>%
+  mutate(ehrSigAdjusted = p.adjust(ehrSignificance, "fdr"))
+
+noSymptoms_weighted$trueLabel <- ifelse(noSymptoms_weighted$ehrSigAdjusted <= 0.05, 1, 0)
+```
+
+```{r}
+roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score)
+
+plot(roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score), xlim = c(1, 0), ylim = c(0, 1))
+```
+
+
+```{r}
+# Sort our dataframe by score
+noSymptoms_weighted_sorted = noSymptoms_weighted[order(noSymptoms_weighted$score),] 
+
+# Come up with different k values based upon number of rows in the dataframe
+kProportionValues = c(0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00)
+
+kCountValues = round(nrow(noSymptoms_weighted_sorted)*kProportionValues)
+```
+
+Precisions
+```{r}
+precisions = c()
+# For each k count, calculate the precision:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the fraction of them have a true label of 1
+  currentPrecision = sum(currentSearchResults$trueLabel)/nrow(currentSearchResults)
+  precisions = c(precisions, currentPrecision)
+}
+
+print(precisions)
+```
+
+Recall/Sensitivity
+```{r}
+sensitivities = c()
+numTruePositives = sum(noSymptoms_weighted_sorted$trueLabel)
+
+# For each k count, calculate the recall:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the number of true Positives we identified out of the full list of true positives
+  currentSensitivity = sum(currentSearchResults$trueLabel)/numTruePositives
+  sensitivities = c(sensitivities, currentSensitivity)
+}
+
+print(sensitivities)
+```
+
+F1
+```{r}
+# Given the precision and recall value, return 2/(1/precision + 1/recall)
+f1Scores = 2/(1/precisions + 1/sensitivities)
+f1Scores
+```
+
+
+
+
+# 642.1
+```{r}
+noSymptoms_weighted = read.csv("/Users/viveksrm/Desktop/coAssociationResults/coAssociationResults_642.1.csv")
+noSymptoms_weighted = noSymptoms_weighted %>%
+  select(phenotype, score, ehrSignificance) %>%
+  mutate(ehrSigAdjusted = p.adjust(ehrSignificance, "fdr"))
+
+noSymptoms_weighted$trueLabel <- ifelse(noSymptoms_weighted$ehrSigAdjusted <= 0.05, 1, 0)
+```
+
+```{r}
+roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score)
+
+plot(roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score), xlim = c(1, 0), ylim = c(0, 1))
+```
+
+
+```{r}
+# Sort our dataframe by score
+noSymptoms_weighted_sorted = noSymptoms_weighted[order(noSymptoms_weighted$score),] 
+
+# Come up with different k values based upon number of rows in the dataframe
+kProportionValues = c(0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00)
+
+kCountValues = round(nrow(noSymptoms_weighted_sorted)*kProportionValues)
+```
+
+Precisions
+```{r}
+precisions = c()
+# For each k count, calculate the precision:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the fraction of them have a true label of 1
+  currentPrecision = sum(currentSearchResults$trueLabel)/nrow(currentSearchResults)
+  precisions = c(precisions, currentPrecision)
+}
+
+print(precisions)
+```
+
+Recall/Sensitivity
+```{r}
+sensitivities = c()
+numTruePositives = sum(noSymptoms_weighted_sorted$trueLabel)
+
+# For each k count, calculate the recall:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the number of true Positives we identified out of the full list of true positives
+  currentSensitivity = sum(currentSearchResults$trueLabel)/numTruePositives
+  sensitivities = c(sensitivities, currentSensitivity)
+}
+
+print(sensitivities)
+```
+
+F1
+```{r}
+# Given the precision and recall value, return 2/(1/precision + 1/recall)
+f1Scores = 2/(1/precisions + 1/sensitivities)
+f1Scores
+```
+
+
+
+
+# 642
+```{r}
+noSymptoms_weighted = read.csv("/Users/viveksrm/Desktop/coAssociationResults/coAssociationResults_642.csv")
+noSymptoms_weighted = noSymptoms_weighted %>%
+  select(phenotype, score, ehrSignificance) %>%
+  mutate(ehrSigAdjusted = p.adjust(ehrSignificance, "fdr"))
+
+noSymptoms_weighted$trueLabel <- ifelse(noSymptoms_weighted$ehrSigAdjusted <= 0.05, 1, 0)
+```
+
+```{r}
+roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score)
+
+plot(roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score), xlim = c(1, 0), ylim = c(0, 1))
+```
+
+
+```{r}
+# Sort our dataframe by score
+noSymptoms_weighted_sorted = noSymptoms_weighted[order(noSymptoms_weighted$score),] 
+
+# Come up with different k values based upon number of rows in the dataframe
+kProportionValues = c(0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00)
+
+kCountValues = round(nrow(noSymptoms_weighted_sorted)*kProportionValues)
+```
+
+Precisions
+```{r}
+precisions = c()
+# For each k count, calculate the precision:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the fraction of them have a true label of 1
+  currentPrecision = sum(currentSearchResults$trueLabel)/nrow(currentSearchResults)
+  precisions = c(precisions, currentPrecision)
+}
+
+print(precisions)
+```
+
+Recall/Sensitivity
+```{r}
+sensitivities = c()
+numTruePositives = sum(noSymptoms_weighted_sorted$trueLabel)
+
+# For each k count, calculate the recall:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the number of true Positives we identified out of the full list of true positives
+  currentSensitivity = sum(currentSearchResults$trueLabel)/numTruePositives
+  sensitivities = c(sensitivities, currentSensitivity)
+}
+
+print(sensitivities)
+```
+
+F1
+```{r}
+# Given the precision and recall value, return 2/(1/precision + 1/recall)
+f1Scores = 2/(1/precisions + 1/sensitivities)
+f1Scores
+```
+
+
+
+# 645
+```{r}
+noSymptoms_weighted = read.csv("/Users/viveksrm/Desktop/coAssociationResults/coAssociationResults_645.csv")
+noSymptoms_weighted = noSymptoms_weighted %>%
+  select(phenotype, score, ehrSignificance) %>%
+  mutate(ehrSigAdjusted = p.adjust(ehrSignificance, "fdr"))
+
+noSymptoms_weighted$trueLabel <- ifelse(noSymptoms_weighted$ehrSigAdjusted <= 0.05, 1, 0)
+```
+
+```{r}
+roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score)
+
+plot(roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score), xlim = c(1, 0), ylim = c(0, 1))
+```
+
+
+```{r}
+# Sort our dataframe by score
+noSymptoms_weighted_sorted = noSymptoms_weighted[order(noSymptoms_weighted$score),] 
+
+# Come up with different k values based upon number of rows in the dataframe
+kProportionValues = c(0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00)
+
+kCountValues = round(nrow(noSymptoms_weighted_sorted)*kProportionValues)
+```
+
+Precisions
+```{r}
+precisions = c()
+# For each k count, calculate the precision:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the fraction of them have a true label of 1
+  currentPrecision = sum(currentSearchResults$trueLabel)/nrow(currentSearchResults)
+  precisions = c(precisions, currentPrecision)
+}
+
+print(precisions)
+```
+
+Recall/Sensitivity
+```{r}
+sensitivities = c()
+numTruePositives = sum(noSymptoms_weighted_sorted$trueLabel)
+
+# For each k count, calculate the recall:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the number of true Positives we identified out of the full list of true positives
+  currentSensitivity = sum(currentSearchResults$trueLabel)/numTruePositives
+  sensitivities = c(sensitivities, currentSensitivity)
+}
+
+print(sensitivities)
+```
+
+F1
+```{r}
+# Given the precision and recall value, return 2/(1/precision + 1/recall)
+f1Scores = 2/(1/precisions + 1/sensitivities)
+f1Scores
+```
+
+
+
+
+# 643
+```{r}
+noSymptoms_weighted = read.csv("/Users/viveksrm/Desktop/coAssociationResults/coAssociationResults_643.csv")
+noSymptoms_weighted = noSymptoms_weighted %>%
+  select(phenotype, score, ehrSignificance) %>%
+  mutate(ehrSigAdjusted = p.adjust(ehrSignificance, "fdr"))
+
+noSymptoms_weighted$trueLabel <- ifelse(noSymptoms_weighted$ehrSigAdjusted <= 0.05, 1, 0)
+```
+
+```{r}
+roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score)
+
+plot(roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score), xlim = c(1, 0), ylim = c(0, 1))
+```
+
+
+```{r}
+# Sort our dataframe by score
+noSymptoms_weighted_sorted = noSymptoms_weighted[order(noSymptoms_weighted$score),] 
+
+# Come up with different k values based upon number of rows in the dataframe
+kProportionValues = c(0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00)
+
+kCountValues = round(nrow(noSymptoms_weighted_sorted)*kProportionValues)
+```
+
+Precisions
+```{r}
+precisions = c()
+# For each k count, calculate the precision:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the fraction of them have a true label of 1
+  currentPrecision = sum(currentSearchResults$trueLabel)/nrow(currentSearchResults)
+  precisions = c(precisions, currentPrecision)
+}
+
+print(precisions)
+```
+
+Recall/Sensitivity
+```{r}
+sensitivities = c()
+numTruePositives = sum(noSymptoms_weighted_sorted$trueLabel)
+
+# For each k count, calculate the recall:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the number of true Positives we identified out of the full list of true positives
+  currentSensitivity = sum(currentSearchResults$trueLabel)/numTruePositives
+  sensitivities = c(sensitivities, currentSensitivity)
+}
+
+print(sensitivities)
+```
+
+F1
+```{r}
+# Given the precision and recall value, return 2/(1/precision + 1/recall)
+f1Scores = 2/(1/precisions + 1/sensitivities)
+f1Scores
+```
+
+
+
+
+# 647
+```{r}
+noSymptoms_weighted = read.csv("/Users/viveksrm/Desktop/coAssociationResults/coAssociationResults_647.csv")
+noSymptoms_weighted = noSymptoms_weighted %>%
+  select(phenotype, score, ehrSignificance) %>%
+  mutate(ehrSigAdjusted = p.adjust(ehrSignificance, "fdr"))
+
+noSymptoms_weighted$trueLabel <- ifelse(noSymptoms_weighted$ehrSigAdjusted <= 0.05, 1, 0)
+```
+
+```{r}
+roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score)
+
+plot(roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score), xlim = c(1, 0), ylim = c(0, 1))
+```
+
+
+```{r}
+# Sort our dataframe by score
+noSymptoms_weighted_sorted = noSymptoms_weighted[order(noSymptoms_weighted$score),] 
+
+# Come up with different k values based upon number of rows in the dataframe
+kProportionValues = c(0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00)
+
+kCountValues = round(nrow(noSymptoms_weighted_sorted)*kProportionValues)
+```
+
+Precisions
+```{r}
+precisions = c()
+# For each k count, calculate the precision:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the fraction of them have a true label of 1
+  currentPrecision = sum(currentSearchResults$trueLabel)/nrow(currentSearchResults)
+  precisions = c(precisions, currentPrecision)
+}
+
+print(precisions)
+```
+
+Recall/Sensitivity
+```{r}
+sensitivities = c()
+numTruePositives = sum(noSymptoms_weighted_sorted$trueLabel)
+
+# For each k count, calculate the recall:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the number of true Positives we identified out of the full list of true positives
+  currentSensitivity = sum(currentSearchResults$trueLabel)/numTruePositives
+  sensitivities = c(sensitivities, currentSensitivity)
+}
+
+print(sensitivities)
+```
+
+F1
+```{r}
+# Given the precision and recall value, return 2/(1/precision + 1/recall)
+f1Scores = 2/(1/precisions + 1/sensitivities)
+f1Scores
+```
+
+# 646
+```{r}
+noSymptoms_weighted = read.csv("/Users/viveksrm/Desktop/coAssociationResults/coAssociationResults_646.csv")
+noSymptoms_weighted = noSymptoms_weighted %>%
+  select(phenotype, score, ehrSignificance) %>%
+  mutate(ehrSigAdjusted = p.adjust(ehrSignificance, "fdr"))
+
+noSymptoms_weighted$trueLabel <- ifelse(noSymptoms_weighted$ehrSigAdjusted <= 0.05, 1, 0)
+```
+
+```{r}
+roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score)
+
+plot(roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score), xlim = c(1, 0), ylim = c(0, 1))
+```
+
+
+```{r}
+# Sort our dataframe by score
+noSymptoms_weighted_sorted = noSymptoms_weighted[order(noSymptoms_weighted$score),] 
+
+# Come up with different k values based upon number of rows in the dataframe
+kProportionValues = c(0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00)
+
+kCountValues = round(nrow(noSymptoms_weighted_sorted)*kProportionValues)
+```
+
+Precisions
+```{r}
+precisions = c()
+# For each k count, calculate the precision:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the fraction of them have a true label of 1
+  currentPrecision = sum(currentSearchResults$trueLabel)/nrow(currentSearchResults)
+  precisions = c(precisions, currentPrecision)
+}
+
+print(precisions)
+```
+
+Recall/Sensitivity
+```{r}
+sensitivities = c()
+numTruePositives = sum(noSymptoms_weighted_sorted$trueLabel)
+
+# For each k count, calculate the recall:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the number of true Positives we identified out of the full list of true positives
+  currentSensitivity = sum(currentSearchResults$trueLabel)/numTruePositives
+  sensitivities = c(sensitivities, currentSensitivity)
+}
+
+print(sensitivities)
+```
+
+F1
+```{r}
+# Given the precision and recall value, return 2/(1/precision + 1/recall)
+f1Scores = 2/(1/precisions + 1/sensitivities)
+f1Scores
+```
+
+
+# 647.1
+```{r}
+noSymptoms_weighted = read.csv("/Users/viveksrm/Desktop/coAssociationResults/coAssociationResults_647.1.csv")
+noSymptoms_weighted = noSymptoms_weighted %>%
+  select(phenotype, score, ehrSignificance) %>%
+  mutate(ehrSigAdjusted = p.adjust(ehrSignificance, "fdr"))
+
+noSymptoms_weighted$trueLabel <- ifelse(noSymptoms_weighted$ehrSigAdjusted <= 0.05, 1, 0)
+```
+
+```{r}
+roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score)
+
+plot(roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score), xlim = c(1, 0), ylim = c(0, 1))
+```
+
+
+```{r}
+# Sort our dataframe by score
+noSymptoms_weighted_sorted = noSymptoms_weighted[order(noSymptoms_weighted$score),] 
+
+# Come up with different k values based upon number of rows in the dataframe
+kProportionValues = c(0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00)
+
+kCountValues = round(nrow(noSymptoms_weighted_sorted)*kProportionValues)
+```
+
+Precisions
+```{r}
+precisions = c()
+# For each k count, calculate the precision:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the fraction of them have a true label of 1
+  currentPrecision = sum(currentSearchResults$trueLabel)/nrow(currentSearchResults)
+  precisions = c(precisions, currentPrecision)
+}
+
+print(precisions)
+```
+
+Recall/Sensitivity
+```{r}
+sensitivities = c()
+numTruePositives = sum(noSymptoms_weighted_sorted$trueLabel)
+
+# For each k count, calculate the recall:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the number of true Positives we identified out of the full list of true positives
+  currentSensitivity = sum(currentSearchResults$trueLabel)/numTruePositives
+  sensitivities = c(sensitivities, currentSensitivity)
+}
+
+print(sensitivities)
+```
+
+F1
+```{r}
+# Given the precision and recall value, return 2/(1/precision + 1/recall)
+f1Scores = 2/(1/precisions + 1/sensitivities)
+f1Scores
+```
+
+
+
+
+
+
+# 649
+```{r}
+noSymptoms_weighted = read.csv("/Users/viveksrm/Desktop/coAssociationResults/coAssociationResults_649.csv")
+noSymptoms_weighted = noSymptoms_weighted %>%
+  select(phenotype, score, ehrSignificance) %>%
+  mutate(ehrSigAdjusted = p.adjust(ehrSignificance, "fdr"))
+
+noSymptoms_weighted$trueLabel <- ifelse(noSymptoms_weighted$ehrSigAdjusted <= 0.05, 1, 0)
+```
+
+```{r}
+roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score)
+
+plot(roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score), xlim = c(1, 0), ylim = c(0, 1))
+```
+
+
+```{r}
+# Sort our dataframe by score
+noSymptoms_weighted_sorted = noSymptoms_weighted[order(noSymptoms_weighted$score),] 
+
+# Come up with different k values based upon number of rows in the dataframe
+kProportionValues = c(0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00)
+
+kCountValues = round(nrow(noSymptoms_weighted_sorted)*kProportionValues)
+```
+
+Precisions
+```{r}
+precisions = c()
+# For each k count, calculate the precision:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the fraction of them have a true label of 1
+  currentPrecision = sum(currentSearchResults$trueLabel)/nrow(currentSearchResults)
+  precisions = c(precisions, currentPrecision)
+}
+
+print(precisions)
+```
+
+Recall/Sensitivity
+```{r}
+sensitivities = c()
+numTruePositives = sum(noSymptoms_weighted_sorted$trueLabel)
+
+# For each k count, calculate the recall:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the number of true Positives we identified out of the full list of true positives
+  currentSensitivity = sum(currentSearchResults$trueLabel)/numTruePositives
+  sensitivities = c(sensitivities, currentSensitivity)
+}
+
+print(sensitivities)
+```
+
+F1
+```{r}
+# Given the precision and recall value, return 2/(1/precision + 1/recall)
+f1Scores = 2/(1/precisions + 1/sensitivities)
+f1Scores
+```
+
+
+
+
+# 650
+```{r}
+noSymptoms_weighted = read.csv("/Users/viveksrm/Desktop/coAssociationResults/coAssociationResults_650.csv")
+noSymptoms_weighted = noSymptoms_weighted %>%
+  select(phenotype, score, ehrSignificance) %>%
+  mutate(ehrSigAdjusted = p.adjust(ehrSignificance, "fdr"))
+
+noSymptoms_weighted$trueLabel <- ifelse(noSymptoms_weighted$ehrSigAdjusted <= 0.05, 1, 0)
+```
+
+```{r}
+roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score)
+
+plot(roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score), xlim = c(1, 0), ylim = c(0, 1))
+```
+
+
+```{r}
+# Sort our dataframe by score
+noSymptoms_weighted_sorted = noSymptoms_weighted[order(noSymptoms_weighted$score),] 
+
+# Come up with different k values based upon number of rows in the dataframe
+kProportionValues = c(0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00)
+
+kCountValues = round(nrow(noSymptoms_weighted_sorted)*kProportionValues)
+```
+
+Precisions
+```{r}
+precisions = c()
+# For each k count, calculate the precision:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the fraction of them have a true label of 1
+  currentPrecision = sum(currentSearchResults$trueLabel)/nrow(currentSearchResults)
+  precisions = c(precisions, currentPrecision)
+}
+
+print(precisions)
+```
+
+Recall/Sensitivity
+```{r}
+sensitivities = c()
+numTruePositives = sum(noSymptoms_weighted_sorted$trueLabel)
+
+# For each k count, calculate the recall:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the number of true Positives we identified out of the full list of true positives
+  currentSensitivity = sum(currentSearchResults$trueLabel)/numTruePositives
+  sensitivities = c(sensitivities, currentSensitivity)
+}
+
+print(sensitivities)
+```
+
+F1
+```{r}
+# Given the precision and recall value, return 2/(1/precision + 1/recall)
+f1Scores = 2/(1/precisions + 1/sensitivities)
+f1Scores
+```
+
+
+
+
+# 651
+```{r}
+noSymptoms_weighted = read.csv("/Users/viveksrm/Desktop/coAssociationResults/coAssociationResults_651.csv")
+noSymptoms_weighted = noSymptoms_weighted %>%
+  select(phenotype, score, ehrSignificance) %>%
+  mutate(ehrSigAdjusted = p.adjust(ehrSignificance, "fdr"))
+
+noSymptoms_weighted$trueLabel <- ifelse(noSymptoms_weighted$ehrSigAdjusted <= 0.05, 1, 0)
+```
+
+```{r}
+roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score)
+
+plot(roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score), xlim = c(1, 0), ylim = c(0, 1))
+```
+
+
+```{r}
+# Sort our dataframe by score
+noSymptoms_weighted_sorted = noSymptoms_weighted[order(noSymptoms_weighted$score),] 
+
+# Come up with different k values based upon number of rows in the dataframe
+kProportionValues = c(0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00)
+
+kCountValues = round(nrow(noSymptoms_weighted_sorted)*kProportionValues)
+```
+
+Precisions
+```{r}
+precisions = c()
+# For each k count, calculate the precision:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the fraction of them have a true label of 1
+  currentPrecision = sum(currentSearchResults$trueLabel)/nrow(currentSearchResults)
+  precisions = c(precisions, currentPrecision)
+}
+
+print(precisions)
+```
+
+Recall/Sensitivity
+```{r}
+sensitivities = c()
+numTruePositives = sum(noSymptoms_weighted_sorted$trueLabel)
+
+# For each k count, calculate the recall:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the number of true Positives we identified out of the full list of true positives
+  currentSensitivity = sum(currentSearchResults$trueLabel)/numTruePositives
+  sensitivities = c(sensitivities, currentSensitivity)
+}
+
+print(sensitivities)
+```
+
+F1
+```{r}
+# Given the precision and recall value, return 2/(1/precision + 1/recall)
+f1Scores = 2/(1/precisions + 1/sensitivities)
+f1Scores
+```
+
+
+
+
+# 653
+```{r}
+noSymptoms_weighted = read.csv("/Users/viveksrm/Desktop/coAssociationResults/coAssociationResults_653.csv")
+noSymptoms_weighted = noSymptoms_weighted %>%
+  select(phenotype, score, ehrSignificance) %>%
+  mutate(ehrSigAdjusted = p.adjust(ehrSignificance, "fdr"))
+
+noSymptoms_weighted$trueLabel <- ifelse(noSymptoms_weighted$ehrSigAdjusted <= 0.05, 1, 0)
+```
+
+```{r}
+roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score)
+
+plot(roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score), xlim = c(1, 0), ylim = c(0, 1))
+```
+
+
+```{r}
+# Sort our dataframe by score
+noSymptoms_weighted_sorted = noSymptoms_weighted[order(noSymptoms_weighted$score),] 
+
+# Come up with different k values based upon number of rows in the dataframe
+kProportionValues = c(0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00)
+
+kCountValues = round(nrow(noSymptoms_weighted_sorted)*kProportionValues)
+```
+
+Precisions
+```{r}
+precisions = c()
+# For each k count, calculate the precision:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the fraction of them have a true label of 1
+  currentPrecision = sum(currentSearchResults$trueLabel)/nrow(currentSearchResults)
+  precisions = c(precisions, currentPrecision)
+}
+
+print(precisions)
+```
+
+Recall/Sensitivity
+```{r}
+sensitivities = c()
+numTruePositives = sum(noSymptoms_weighted_sorted$trueLabel)
+
+# For each k count, calculate the recall:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the number of true Positives we identified out of the full list of true positives
+  currentSensitivity = sum(currentSearchResults$trueLabel)/numTruePositives
+  sensitivities = c(sensitivities, currentSensitivity)
+}
+
+print(sensitivities)
+```
+
+F1
+```{r}
+# Given the precision and recall value, return 2/(1/precision + 1/recall)
+f1Scores = 2/(1/precisions + 1/sensitivities)
+f1Scores
+```
+
+
+
+
+
+# 655
+```{r}
+noSymptoms_weighted = read.csv("/Users/viveksrm/Desktop/coAssociationResults/coAssociationResults_655.csv")
+noSymptoms_weighted = noSymptoms_weighted %>%
+  select(phenotype, score, ehrSignificance) %>%
+  mutate(ehrSigAdjusted = p.adjust(ehrSignificance, "fdr"))
+
+noSymptoms_weighted$trueLabel <- ifelse(noSymptoms_weighted$ehrSigAdjusted <= 0.05, 1, 0)
+```
+
+```{r}
+roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score)
+
+plot(roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score), xlim = c(1, 0), ylim = c(0, 1))
+```
+
+
+```{r}
+# Sort our dataframe by score
+noSymptoms_weighted_sorted = noSymptoms_weighted[order(noSymptoms_weighted$score),] 
+
+# Come up with different k values based upon number of rows in the dataframe
+kProportionValues = c(0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00)
+
+kCountValues = round(nrow(noSymptoms_weighted_sorted)*kProportionValues)
+```
+
+Precisions
+```{r}
+precisions = c()
+# For each k count, calculate the precision:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the fraction of them have a true label of 1
+  currentPrecision = sum(currentSearchResults$trueLabel)/nrow(currentSearchResults)
+  precisions = c(precisions, currentPrecision)
+}
+
+print(precisions)
+```
+
+Recall/Sensitivity
+```{r}
+sensitivities = c()
+numTruePositives = sum(noSymptoms_weighted_sorted$trueLabel)
+
+# For each k count, calculate the recall:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the number of true Positives we identified out of the full list of true positives
+  currentSensitivity = sum(currentSearchResults$trueLabel)/numTruePositives
+  sensitivities = c(sensitivities, currentSensitivity)
+}
+
+print(sensitivities)
+```
+
+F1
+```{r}
+# Given the precision and recall value, return 2/(1/precision + 1/recall)
+f1Scores = 2/(1/precisions + 1/sensitivities)
+f1Scores
+```
+
+
+
+
+# 661
+```{r}
+noSymptoms_weighted = read.csv("/Users/viveksrm/Desktop/coAssociationResults/coAssociationResults_661.csv")
+noSymptoms_weighted = noSymptoms_weighted %>%
+  select(phenotype, score, ehrSignificance) %>%
+  mutate(ehrSigAdjusted = p.adjust(ehrSignificance, "fdr"))
+
+noSymptoms_weighted$trueLabel <- ifelse(noSymptoms_weighted$ehrSigAdjusted <= 0.05, 1, 0)
+```
+
+```{r}
+roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score)
+
+plot(roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score), xlim = c(1, 0), ylim = c(0, 1))
+```
+
+
+```{r}
+# Sort our dataframe by score
+noSymptoms_weighted_sorted = noSymptoms_weighted[order(noSymptoms_weighted$score),] 
+
+# Come up with different k values based upon number of rows in the dataframe
+kProportionValues = c(0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00)
+
+kCountValues = round(nrow(noSymptoms_weighted_sorted)*kProportionValues)
+```
+
+Precisions
+```{r}
+precisions = c()
+# For each k count, calculate the precision:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the fraction of them have a true label of 1
+  currentPrecision = sum(currentSearchResults$trueLabel)/nrow(currentSearchResults)
+  precisions = c(precisions, currentPrecision)
+}
+
+print(precisions)
+```
+
+Recall/Sensitivity
+```{r}
+sensitivities = c()
+numTruePositives = sum(noSymptoms_weighted_sorted$trueLabel)
+
+# For each k count, calculate the recall:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the number of true Positives we identified out of the full list of true positives
+  currentSensitivity = sum(currentSearchResults$trueLabel)/numTruePositives
+  sensitivities = c(sensitivities, currentSensitivity)
+}
+
+print(sensitivities)
+```
+
+F1
+```{r}
+# Given the precision and recall value, return 2/(1/precision + 1/recall)
+f1Scores = 2/(1/precisions + 1/sensitivities)
+f1Scores
+```
+
+
+
+
+# 663
+```{r}
+noSymptoms_weighted = read.csv("/Users/viveksrm/Desktop/coAssociationResults/coAssociationResults_663.csv")
+noSymptoms_weighted = noSymptoms_weighted %>%
+  select(phenotype, score, ehrSignificance) %>%
+  mutate(ehrSigAdjusted = p.adjust(ehrSignificance, "fdr"))
+
+noSymptoms_weighted$trueLabel <- ifelse(noSymptoms_weighted$ehrSigAdjusted <= 0.05, 1, 0)
+```
+
+```{r}
+roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score)
+
+plot(roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score), xlim = c(1, 0), ylim = c(0, 1))
+```
+
+
+```{r}
+# Sort our dataframe by score
+noSymptoms_weighted_sorted = noSymptoms_weighted[order(noSymptoms_weighted$score),] 
+
+# Come up with different k values based upon number of rows in the dataframe
+kProportionValues = c(0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00)
+
+kCountValues = round(nrow(noSymptoms_weighted_sorted)*kProportionValues)
+```
+
+Precisions
+```{r}
+precisions = c()
+# For each k count, calculate the precision:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the fraction of them have a true label of 1
+  currentPrecision = sum(currentSearchResults$trueLabel)/nrow(currentSearchResults)
+  precisions = c(precisions, currentPrecision)
+}
+
+print(precisions)
+```
+
+Recall/Sensitivity
+```{r}
+sensitivities = c()
+numTruePositives = sum(noSymptoms_weighted_sorted$trueLabel)
+
+# For each k count, calculate the recall:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the number of true Positives we identified out of the full list of true positives
+  currentSensitivity = sum(currentSearchResults$trueLabel)/numTruePositives
+  sensitivities = c(sensitivities, currentSensitivity)
+}
+
+print(sensitivities)
+```
+
+F1
+```{r}
+# Given the precision and recall value, return 2/(1/precision + 1/recall)
+f1Scores = 2/(1/precisions + 1/sensitivities)
+f1Scores
+```
+
+
+
+
+# 665
+```{r}
+noSymptoms_weighted = read.csv("/Users/viveksrm/Desktop/coAssociationResults/coAssociationResults_665.csv")
+noSymptoms_weighted = noSymptoms_weighted %>%
+  select(phenotype, score, ehrSignificance) %>%
+  mutate(ehrSigAdjusted = p.adjust(ehrSignificance, "fdr"))
+
+noSymptoms_weighted$trueLabel <- ifelse(noSymptoms_weighted$ehrSigAdjusted <= 0.05, 1, 0)
+```
+
+```{r}
+roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score)
+
+plot(roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score), xlim = c(1, 0), ylim = c(0, 1))
+```
+
+
+```{r}
+# Sort our dataframe by score
+noSymptoms_weighted_sorted = noSymptoms_weighted[order(noSymptoms_weighted$score),] 
+
+# Come up with different k values based upon number of rows in the dataframe
+kProportionValues = c(0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00)
+
+kCountValues = round(nrow(noSymptoms_weighted_sorted)*kProportionValues)
+```
+
+Precisions
+```{r}
+precisions = c()
+# For each k count, calculate the precision:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the fraction of them have a true label of 1
+  currentPrecision = sum(currentSearchResults$trueLabel)/nrow(currentSearchResults)
+  precisions = c(precisions, currentPrecision)
+}
+
+print(precisions)
+```
+
+Recall/Sensitivity
+```{r}
+sensitivities = c()
+numTruePositives = sum(noSymptoms_weighted_sorted$trueLabel)
+
+# For each k count, calculate the recall:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the number of true Positives we identified out of the full list of true positives
+  currentSensitivity = sum(currentSearchResults$trueLabel)/numTruePositives
+  sensitivities = c(sensitivities, currentSensitivity)
+}
+
+print(sensitivities)
+```
+
+F1
+```{r}
+# Given the precision and recall value, return 2/(1/precision + 1/recall)
+f1Scores = 2/(1/precisions + 1/sensitivities)
+f1Scores
+```
+
+
+
+# 669
+```{r}
+noSymptoms_weighted = read.csv("/Users/viveksrm/Desktop/coAssociationResults/coAssociationResults_669.csv")
+noSymptoms_weighted = noSymptoms_weighted %>%
+  select(phenotype, score, ehrSignificance) %>%
+  mutate(ehrSigAdjusted = p.adjust(ehrSignificance, "fdr"))
+
+noSymptoms_weighted$trueLabel <- ifelse(noSymptoms_weighted$ehrSigAdjusted <= 0.05, 1, 0)
+```
+
+```{r}
+roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score)
+
+plot(roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score), xlim = c(1, 0), ylim = c(0, 1))
+```
+
+
+```{r}
+# Sort our dataframe by score
+noSymptoms_weighted_sorted = noSymptoms_weighted[order(noSymptoms_weighted$score),] 
+
+# Come up with different k values based upon number of rows in the dataframe
+kProportionValues = c(0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00)
+
+kCountValues = round(nrow(noSymptoms_weighted_sorted)*kProportionValues)
+```
+
+Precisions
+```{r}
+precisions = c()
+# For each k count, calculate the precision:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the fraction of them have a true label of 1
+  currentPrecision = sum(currentSearchResults$trueLabel)/nrow(currentSearchResults)
+  precisions = c(precisions, currentPrecision)
+}
+
+print(precisions)
+```
+
+Recall/Sensitivity
+```{r}
+sensitivities = c()
+numTruePositives = sum(noSymptoms_weighted_sorted$trueLabel)
+
+# For each k count, calculate the recall:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the number of true Positives we identified out of the full list of true positives
+  currentSensitivity = sum(currentSearchResults$trueLabel)/numTruePositives
+  sensitivities = c(sensitivities, currentSensitivity)
+}
+
+print(sensitivities)
+```
+
+F1
+```{r}
+# Given the precision and recall value, return 2/(1/precision + 1/recall)
+f1Scores = 2/(1/precisions + 1/sensitivities)
+f1Scores
+```
+
+
+
+
+# 674
+```{r}
+noSymptoms_weighted = read.csv("/Users/viveksrm/Desktop/coAssociationResults/coAssociationResults_674.csv")
+noSymptoms_weighted = noSymptoms_weighted %>%
+  select(phenotype, score, ehrSignificance) %>%
+  mutate(ehrSigAdjusted = p.adjust(ehrSignificance, "fdr"))
+
+noSymptoms_weighted$trueLabel <- ifelse(noSymptoms_weighted$ehrSigAdjusted <= 0.05, 1, 0)
+```
+
+```{r}
+roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score)
+
+plot(roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score), xlim = c(1, 0), ylim = c(0, 1))
+```
+
+
+```{r}
+# Sort our dataframe by score
+noSymptoms_weighted_sorted = noSymptoms_weighted[order(noSymptoms_weighted$score),] 
+
+# Come up with different k values based upon number of rows in the dataframe
+kProportionValues = c(0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00)
+
+kCountValues = round(nrow(noSymptoms_weighted_sorted)*kProportionValues)
+```
+
+Precisions
+```{r}
+precisions = c()
+# For each k count, calculate the precision:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the fraction of them have a true label of 1
+  currentPrecision = sum(currentSearchResults$trueLabel)/nrow(currentSearchResults)
+  precisions = c(precisions, currentPrecision)
+}
+
+print(precisions)
+```
+
+Recall/Sensitivity
+```{r}
+sensitivities = c()
+numTruePositives = sum(noSymptoms_weighted_sorted$trueLabel)
+
+# For each k count, calculate the recall:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the number of true Positives we identified out of the full list of true positives
+  currentSensitivity = sum(currentSearchResults$trueLabel)/numTruePositives
+  sensitivities = c(sensitivities, currentSensitivity)
+}
+
+print(sensitivities)
+```
+
+F1
+```{r}
+# Given the precision and recall value, return 2/(1/precision + 1/recall)
+f1Scores = 2/(1/precisions + 1/sensitivities)
+f1Scores
+```
+
+
+
+
+
+
+
+
+```{r}
+LDnoSymptoms_weighted = read.csv("/Users/viveksrm/Documents/GitHub/peGBSSL/results/coassociationResults/LDgbsslAndEHR_noSymptoms_chisq_results.csv")
+LDnoSymptoms_weighted = LDnoSymptoms_weighted %>%
+  select(phenotype, score, ehrSignificance) %>%
+  mutate(ehrSigAdjusted = p.adjust(ehrSignificance, "fdr"))
+
+LDnoSymptoms_weighted$trueLabel <- ifelse(LDnoSymptoms_weighted$ehrSigAdjusted <= 0.05, 1, 0)
+```
+
+```{r}
+# Sort our dataframe by score
+LDnoSymptoms_weighted_sorted = LDnoSymptoms_weighted[order(LDnoSymptoms_weighted$score),] 
+
+# Come up with different k values based upon number of rows in the dataframe
+kProportionValues = c(0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90, 0.95, 1.00)
+
+kCountValues = round(nrow(LDnoSymptoms_weighted_sorted)*kProportionValues)
+```
+
+Precisions
+```{r}
+precisions = c()
+# For each k count, calculate the precision:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the fraction of them have a true label of 1
+  currentPrecision = sum(currentSearchResults$trueLabel)/nrow(currentSearchResults)
+  precisions = c(precisions, currentPrecision)
+}
+
+print(precisions)
+```
+
+Recall/Sensitivity
+```{r}
+sensitivities = c()
+numTruePositives = sum(noSymptoms_weighted_sorted$trueLabel)
+
+# For each k count, calculate the recall:
+for (kCount in kCountValues) {
+  currentSearchResults = noSymptoms_weighted_sorted[1:kCount, ]
+  # We've received k results - report the number of true Positives we identified out of the full list of true positives
+  currentSensitivity = sum(currentSearchResults$trueLabel)/numTruePositives
+  sensitivities = c(sensitivities, currentSensitivity)
+}
+
+print(sensitivities)
+```
+
+F1
+```{r}
+# Given the precision and recall value, return 2/(1/precision + 1/recall)
+f1Scores = 2/(1/precisions + 1/sensitivities)
+f1Scores
+```
+
+```{r}
+roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score)
+
+plot(roc(noSymptoms_weighted$trueLabel, noSymptoms_weighted$score), xlim = c(1, 0), ylim = c(0, 1))
+```
+
+```{r}
+sum(LDnoSymptoms_weighted_sorted$trueLabel)
+```
+
+
+```{r}
+quantile(LDnoSymptoms_weighted_sorted$score)
+
+slopes = c()
+for(i in 2:length(LDnoSymptoms_weighted_sorted$score)){
+  slope = LDnoSymptoms_weighted_sorted$score[i] - LDnoSymptoms_weighted_sorted$score[i-1]
+  slopes = c(slopes, slope)
+}
+
+#plot(tail(slopes, n = 100))
+plot(slopes[])
+
+```
+
+
+```{r}
+vis = ggplot(LDnoSymptoms_weighted_sorted, aes(x = seq_along(score), y=score)) +
+  geom_point() +
+  geom_vline(xintercept = 780, linetype = "dotted", color = "red") +
+  ylab("GBSSL Score") +
+  scale_y_continuous(limits = c(0.6,1)) +
+  xlab("Phenotype Index") +
+  ggtitle("GBSSL Score Distributions")
+
+plot(vis)
+```
+
+```{r}
+nrow(LDnoSymptoms_weighted_sorted)
+```
+
+
+
+
+```{r}
+vis = ggplot(LDnoSymptoms_weighted_sorted, aes(x=reorder(phenotype, score), y=score)) +
+  geom_point() +
+  ylab("GBSSL Score") +
+  xlab("Phenotype") +
+  theme(axis.text.x=element_blank()) +
+  scale_y_continuous(limits = c(0,1))
+plot(vis)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+noSymptoms_unweighted = read.csv("/Users/viveksrm/Desktop/gbsslAndEHR_results_noSymptoms_unweighted.csv")
+noSymptoms_unweighted = noSymptoms_unweighted %>%
+  select(phenotype, score, ehrSignificance) %>%
+  mutate(ehrSigAdjusted = p.adjust(ehrSignificance, "fdr"))
+
+noSymptoms_unweighted$trueLabel <- ifelse(noSymptoms_unweighted$ehrSigAdjusted <= 0.05, 1, 0)
+```
+
+```{r}
+roc(noSymptoms_unweighted$trueLabel, noSymptoms_unweighted$score)
+
+plot(roc(noSymptoms_unweighted$trueLabel, noSymptoms_unweighted$score), xlim = c(1, 0), ylim = c(0, 1))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+df_tenths_allOccurrences = read.csv("/Users/viveksrm/Desktop/gbssl_ehr_results_tenths_allOccurences.csv")
+df_tenths_allOccurrences = df_tenths_allOccurrences %>%
+  select(phenotype, score, ehrSignificance) %>%
+  mutate(ehrSigAdjusted = p.adjust(ehrSignificance, "fdr"))
+
+df_tenths_allOccurrences$trueLabel <- ifelse(df_tenths_allOccurrences$ehrSigAdjusted <= 0.05, 1, 0)
+```
+
+```{r}
+roc(df_tenths_allOccurrences$trueLabel, df_tenths_allOccurrences$score)
+
+plot(roc(df_tenths_allOccurrences$trueLabel, df_tenths_allOccurrences$score), xlim = c(1, 0), ylim = c(0, 1))
+```
+
+```{r}
+df_tenths_allOccurrences = df_tenths_allOccurrences[order(df_tenths_allOccurrences$score),]
+df_tenths_allOccurrences$phenotype = as.factor(df_tenths_allOccurrences$phenotype)
+df_tenths_allOccurrences_New = dplyr::arrange(df_tenths_allOccurrences, score)
+quantile(df_tenths_allOccurrences_New$score)
+
+slopes = c()
+for(i in 2:length(df_tenths_allOccurrences_New$score)){
+  slope = df_tenths_allOccurrences_New$score[i] - df_tenths_allOccurrences_New$score[i-1]
+  slopes = c(slopes, slope)
+}
+
+#plot(tail(slopes, n = 100))
+plot(slopes)
+
+```
+
+```{r}
+vis = ggplot(df_tenths_allOccurrences_New, aes(x=reorder(phenotype, score), y=score)) +
+  geom_point() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+plot(vis)
+```
+
+
+
+
+
+
+# DF occurrences after enrollment
+
+```{r}
+df_tenths_afterEnrollment = read.csv("/Users/viveksrm/Desktop/gbsslAndEHR_results_postEnrollment.csv")
+df_tenths_afterEnrollment = df_tenths_afterEnrollment %>%
+  select(phenotype, score, ehrSignificance) %>%
+  mutate(ehrSigAdjusted = p.adjust(ehrSignificance, "fdr"))
+
+df_tenths_afterEnrollment$trueLabel <- ifelse(df_tenths_afterEnrollment$ehrSigAdjusted <= 0.05, 1, 0)
+```
+
+```{r}
+write.csv(df_tenths_afterEnrollment, "/Users/viveksrm/Desktop/postEnrollmentTenths.csv")
+```
+
+```{r}
+roc(df_tenths_afterEnrollment$trueLabel, df_tenths_afterEnrollment$score)
+
+plot(roc(df_tenths_afterEnrollment$trueLabel, df_tenths_afterEnrollment$score))
+```
+
+```{r}
+df_tenths_afterEnrollment = df_tenths_afterEnrollment[order(df_tenths_afterEnrollment$score),]
+df_tenths_afterEnrollment$phenotype = as.factor(df_tenths_afterEnrollment$phenotype)
+df_tenths_afterEnrollment_New = dplyr::arrange(df_tenths_afterEnrollment, score)
+quantile(df_tenths_afterEnrollment_New$score)
+
+slopes = c()
+for(i in 2:length(df_tenths_afterEnrollment_New$score)){
+  slope = df_tenths_afterEnrollment_New$score[i] - df_tenths_afterEnrollment_New$score[i-1]
+  slopes = c(slopes, slope)
+}
+
+#plot(tail(slopes, n = 100))
+plot(slopes)
+
+```
+
+```{r}
+vis = ggplot(df_tenths_afterEnrollment_New, aes(x=reorder(phenotype, score), y=score)) +
+  geom_point() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+plot(vis)
+```
+
+
+
+
+
+# DF all occurrences, to the ones
+
+```{r}
+df_ones_alloccurrences = read.csv("/Users/viveksrm/Desktop/gbssl_ehr_results_ones_alloccurences.csv")
+df_ones_alloccurrences = df_ones_alloccurrences %>%
+  select(phenotype, score, ehrSignificance) %>%
+  mutate(ehrSigAdjusted = p.adjust(ehrSignificance, "fdr"))
+
+df_ones_alloccurrences$trueLabel <- ifelse(df_ones_alloccurrences$ehrSigAdjusted <= 0.05, 1, 0)
+```
+
+```{r}
+write.csv(df_ones_alloccurrences, "/Users/viveksrm/Desktop/allOccurencesOnes.csv")
+```
+
+```{r}
+roc(df_ones_alloccurrences$trueLabel, df_ones_alloccurrences$score)
+
+plot(roc(df_ones_alloccurrences$trueLabel, df_ones_alloccurrences$score))
+```
+
+```{r}
+df_ones_alloccurrences = df_ones_alloccurrences[order(df_ones_alloccurrences$score),]
+df_ones_alloccurrences$phenotype = as.factor(df_ones_alloccurrences$phenotype)
+df_ones_alloccurrences_new = dplyr::arrange(df_ones_alloccurrences, score)
+quantile(df_ones_alloccurrences_new$score)
+
+slopes = c()
+for(i in 2:length(df_ones_alloccurrences_new$score)){
+  slope = df_ones_alloccurrences_new$score[i] - df_ones_alloccurrences_new$score[i-1]
+  slopes = c(slopes, slope)
+}
+
+#plot(tail(slopes, n = 100))
+plot(slopes)
+
+```
+
+```{r}
+vis = ggplot(df_ones_alloccurrences_new, aes(x=reorder(phenotype, score), y=score)) +
+  geom_point() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+plot(vis)
+```
+
+
+
